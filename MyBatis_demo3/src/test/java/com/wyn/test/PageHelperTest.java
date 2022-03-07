@@ -39,7 +39,7 @@ public class PageHelperTest {
             PageHelper.startPage(1, 3);
             List<Emp> emps = mapper.selectByExample(null);
             emps.forEach(emp -> System.out.println(emp));
-
+            //分页之后查询相关的信息 ，就包括分页的导航栏信息
             PageInfo<Emp> pageInfo = new PageInfo<>(emps,5);
             System.out.println(pageInfo);
 
