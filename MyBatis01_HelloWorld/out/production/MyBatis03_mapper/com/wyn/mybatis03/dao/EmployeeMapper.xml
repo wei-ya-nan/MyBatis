@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wyn.mybatis03.dao.EmployeeMapper">
+    <!--
+    namespace:名称空间;指定为接口的全类名
+    id：唯一标识
+    resultType：返回值类型
+    #{id}：从传递过来的参数中取出id值
+
+    public Employee getEmpById(Integer id);
+     -->
+    <select id="getEmpById" resultType="com.wyn.mybatis03.bean.Employee">/*namespace*/
+		select id,last_name lastName,email,gender from tbl_employee where id = #{id}
+	</select>
+    <select id="getEmpById" resultType="com.wyn.mybatis03.bean.Employee" databaseId="sql">
+		select id,last_name lastName,email,gender from tbl_employee where id = #{id}
+	</select>
+
+    <!--	public void addEmp(Employee employee);-->
+    <!--parameterType 可以省略-->
+<!--useGeneratedKeys="true"使用自增主键获取主键策略，也就是主键自增之后的值
+	keyProperties :指定对应的主键属性，也就是mybatis获取到主键值以后，将这个值封装到javabean的那个属性
+
+-->
+	<insert id="addEmp" parameterType="com.wyn.mybatis03.bean.Employee" useGeneratedKeys="true" keyProperty="">
+		insert into tbl_employee(last_name,email,gender) values(#{lastName},#{email},#{gender})
+	</insert>
+    <!--	public void updateEmp(Employee employee);-->
+    <update id="updateEmp">
+	update tbl_employee set last_name=#{lastName},email=#{email},gender=#{gender} where id =#{id}
+
+</update>
+    <!--	public void deleteEmp(Integer id);-->
+    <delete id="deleteEmp">
+		delete from tbl_employee where id=#{id}
+	</delete>
+	<select id="getEmpByIdAndLastName" resultType="com.wyn.mybatis03.bean.Employee">
+		select * from tbl_employee where id=#{id} and last_name=#{lastName}
+	</select>
+
+<!--	public List<Employee> getEmpByIdAndLastNameLike(String lastName);-->
+	<select id="getEmpByIdAndLastNameLike" resultType="com.wyn.mybatis03.bean.Employee">
+		select * from tbl_employee where last_name like #{lastName}
+	</select>
+
+<!--	 public Map<String, Employee> getEmpByIdReturnMap(Integer id);-->
+	<select id="getEmpByIdReturnMap" resultType="map">
+		select * from tbl_employee where id=#{id}
+	</select>
+
+	<!--  public Map<Integer, Employee> getEmpByLastNameByLikeReturnMap(Integer id);-->
+	<select id="getEmpByLastNameByLikeReturnMap" resultType="com.wyn.mybatis03.bean.Employee">
+		select * from tbl_employee where last_name like #{lastName}
+	</select>
+
+
+
+	
+	<resultMap id="MyMap" type="com.wyn.mybatis03.bean.Employee">
+		<id column="id" property="id"/>
+
+		<result column="last_name" property="lastName"/>
+		<result column="email" property="email"/>
+		<result column="gender" property="gender"/>
+	</resultMap>
+	<!-- public Employee getEmployeeById(Integer id);-->
+  <select id="getEmployeeById" resultMap="MyMap">
+	  select * from tbl_employee where id=#{id}
+  </select>
+
+</mapper>

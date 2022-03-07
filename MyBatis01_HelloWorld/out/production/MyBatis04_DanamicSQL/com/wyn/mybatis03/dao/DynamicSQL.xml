@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wyn.mybatis03.dao.DynamicSQL">
+	<!--- if
+		- choose (when, otherwise)
+		- trim (where, set)
+		- foreach-->
+	<insert id="addEmo">
+		insert into tbl_employee(last_name,email,gender,d_id)
+		values
+		<foreach collection="emps" separator=",">
+			(#{emps.lastName},#{emps.email},#{emps.gender},#{emps.dept.id})
+		</foreach>
+	</insert>
+	<update id="updateEmp">
+		update tbl_employee
+		<set>
+		<if test="lastName!=null">
+			last_name=#{lastName} ,
+		</if>
+		<if test="email!=null">
+			email=#{eamil},
+		</if>
+		<if test="gender!=null">
+			gender=#{gender}
+		</if>
+		</set>
+
+		where id=#{id}
+	</update>
+
+
+
+	<select id="getEmpByConditionIf" resultType="com.wyn.mybatis03.bean.Employee">
+		select * from tbl_employee where
+		<if test="id!=null">
+			id=#{id}
+		</if>
+		<if test="lastName!=null">
+			and last_name like #{lastName}
+		</if>
+		  and email=#{email} and gender=#{gender}
+	</select>
+</mapper>

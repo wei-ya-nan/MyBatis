@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wyn.mapper.EmpMapper">
+    <!--    <select id="queryAllEmp" resultType="com.wyn.pojo.Emp">-->
+    <!--        select *from emp-->
+    <!--    </select>--><!---->
+    <resultMap id="MyMap" type="com.wyn.pojo.Emp">
+        <id property="eid" column="eid"/>
+        <result property="empName" column="emp_name"/>
+        <result property="email" column="email"/>
+        <result property="age" column="age"/>
+        <result property="sex" column="sex"/>
+    </resultMap>
+    <select id="queryAllEmp" resultMap="MyMap">
+        select * from emp
+    </select>
+    <!--级联属性，适应于多对一的的映射关系方式-->
+    <resultMap id="EmpAndDeptOne" type="com.wyn.pojo.Emp">
+        <id property="eid" column="eid"/>
+        <result property="empName" column="emp_name"/>
+        <result property="email" column="email"/>
+        <result property="sex" column="sex"/>
+        <result property="age" column="age"/>
+        <result property="dept.did" column="did"/>
+        <result property="dept.deptName" column="dept_name"/>
+    </resultMap>
+    <resultMap id="EmpAndDeptTwo" type="com.wyn.pojo.Emp">
+        <id property="eid" column="eid"/>
+        <result property="empName" column="emp_name"/>
+        <result property="email" column="email"/>
+        <result property="sex" column="sex"/>
+        <result property="age" column="age"/>
+        <association property="dept" javaType="com.wyn.pojo.Dept">
+            <id property="did" column="did"/>
+            <result property="deptName" column="dept_name"/>
+        </association>
+    </resultMap>
+
+    <select id="getEmpAndDept" resultMap="EmpAndDeptTwo">
+        select * from emp left join dept on emp.eid = dept.did where emp.eid = #{eid}
+    </select>
+    <resultMap id="EmpAndDeptStepOne" type="com.wyn.pojo.Emp">
+        <id property="eid" column="eid"/>
+        <result property="empName" column="emp_name"/>
+        <result property="email" column="email"/>
+        <result property="sex" column="sex"/>
+        <result property="age" column="age"/>
+        <association property="dept"
+                     select="com.wyn.mapper.DeptMapper.getDeptByStepOne"
+                     column="did" fetchType="lazy"/>
+    </resultMap>
+    <select id="getEmpAndDeptByStepOne" resultMap="EmpAndDeptStepOne">
+        select * from emp where eid = #{eid}
+    </select>
+    <select id="getDeptAndEmpByStepTwo" resultType="com.wyn.pojo.Emp">
+        select * from emp where did = #{did}
+    </select>
+</mapper>

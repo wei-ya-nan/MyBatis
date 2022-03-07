@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wyn.mapper.DynamicSQLMapper">
+<!--    //抽取sql公共的片段 使用include标签引用-->
+    <sql id="column">eid,emp_name,age,sex,email</sql>
+    <insert id="addEmpByList">
+        insert into emp values
+        <foreach collection="emps" item="emp" separator=",">
+            (null,#{emp.empName},#{emp.age},#{emp.sex},#{emp.email},null)
+        </foreach>
+    </insert>
+    <delete id="deleteMoreByArray">
+        delete from emp where eid in
+
+        <foreach collection="eids" item="eid" separator="," open="(" close=")">
+            #{eid}
+        </foreach>
+
+    </delete>
+
+    <select id="getEmpByCondition" resultType="com.wyn.pojo.Emp">
+        select <include refid="column"></include> from emp
+        <where>
+            <if test="empName!=null and empName!=''">
+                and emp_name = #{empName}
+            </if>
+            <if test="age !=null and age!=''">
+                and age = #{age}
+            </if>
+            <if test="email !=null and email!=''">
+                and email = #{email}
+            </if>
+            <if test="sex !=null and sex!=''">
+                and sex = #{sex}
+            </if>
+        </where>
+    </select>
+
+    <select id="geEmpByChoose" resultType="com.wyn.pojo.Emp">
+        select * from emp
+        <where>
+            <choose>
+                <when test="empName !=null">
+                    emp_name = #{empName}
+                </when>
+                <when test="email!=null">
+                    email = #{email}
+                </when>
+            </choose>
+        </where>
+    </select>
+</mapper>
